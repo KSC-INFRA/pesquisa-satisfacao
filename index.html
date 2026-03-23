@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Atendimento - King Star</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .csat-card { max-width: 400px; width: 90%; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        img { width: 140px; margin-bottom: 20px; }
+        h2 { color: #03363d; margin-bottom: 10px; font-size: 22px; }
+        p { color: #666; font-size: 15px; margin-bottom: 25px; }
+        .option { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .option:hover { background-color: #f0f7f8; border-color: #03363d; }
+        input[type="radio"] { margin-right: 15px; width: 20px; height: 20px; cursor: pointer; }
+        button { width: 100%; padding: 15px; background-color: #03363d; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #022a30; }
+        #sucesso { display: none; color: #28a745; font-weight: bold; margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="csat-card" id="formContainer">
+    <img src="https://kingstarcolchoes.com.br/wp-content/uploads/2021/05/logo-king-star.png" alt="King Star">
+    <h2>Como foi seu atendimento?</h2>
+    <p>Sua avaliação é muito importante para nós!</p>
+
+    <div id="ratingList">
+        <label class="option"><input type="radio" name="nota" value="5"> 5 - Muito Satisfeito</label>
+        <label class="option"><input type="radio" name="nota" value="4"> 4 - Satisfeito</label>
+        <label class="option"><input type="radio" name="nota" value="3"> 3 - Indiferente</label>
+        <label class="option"><input type="radio" name="nota" value="2"> 2 - Insatisfeito</label>
+        <label class="option"><input type="radio" name="nota" value="1"> 1 - Muito Insatisfeito</label>
+    </div>
+
+    <button id="btnEnviar">Enviar Avaliação</button>
+    <div id="sucesso">Obrigado! Sua nota foi registrada.</div>
+</div>
+
+<script>
+document.getElementById('btnEnviar').addEventListener('click', function() {
+    const selecionada = document.querySelector('input[name="nota"]:checked');
+    if (!selecionada) return alert("Por favor, selecione uma nota.");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('id');
+    if (!ticketId) return alert("Erro: ID do ticket não encontrado na URL.");
+
+    const webhookId = "01KHYD42543M1KF0ST8WAVNR08";
+    const subdominio = "kingstarcolchoessupport";
+
+    const payload = {
+        "tickets": [{
+            "id": ticketId,
+            "custom_fields": [{"id": 39182752125335, "value": parseInt(selecionada.value)}]
+        }]
+    };
+
+    fetch(`https://${subdominio}.zendesk.com/api/v2/webhooks/${webhookId}/invocations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (response.ok || response.status === 202) {
+            document.getElementById('ratingList').style.display = 'none';
+            document.getElementById('btnEnviar').style.display = 'none';
+            document.getElementById('sucesso').style.display = 'block';
+        } else {
+            alert("Erro ao processar sua nota. Verifique o Webhook.");
+        }
+    });
+});
+</script>
+
+</body>
+</html>
