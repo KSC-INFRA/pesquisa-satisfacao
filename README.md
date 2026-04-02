@@ -46,6 +46,6 @@ Como analista, foquei na integridade do dado. Implementei três travas de segura
 ---
 
 ## 🔗 Links e Contato
-- **Repositório:** `Luiznascimento6599/projeto_CSAT`
+- **Repositório:** `KING-STAR-COLCHOES/pesquisa-satisfacao`
 - **Autor:** Luiz Torres Nascimento
 - **LinkedIn:** [Luiz Torres Nascimento](https://www.linkedin.com/in/luiz-nascimento-52103322a/)
